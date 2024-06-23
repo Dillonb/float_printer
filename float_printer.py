@@ -28,6 +28,7 @@ def do_op(exponent_bits, mantissa_bits):
     mantissa_s_hex = format(mantissa, "#0" + str(int(ceil(mantissa_bits / 4)) + 2) + "x")
     mantissa_s_bin = format(mantissa, "#0" + str(mantissa_bits + 2) + "b")
 
+    print("value:    ", float(val))
     print("sign:     ", sign_s)
     print("exponent: ", exponent_s_hex, " " * (len(mantissa_s_hex) - len(exponent_s_hex) - 1), exponent_s_bin)
     print("mantissa: ", mantissa_s_hex, mantissa_s_bin)
