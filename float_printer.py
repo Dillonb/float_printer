@@ -3,6 +3,7 @@
 import sys
 from termcolor import colored
 from math import ceil
+import struct
 
 def print_usage():
     print("Usage: %s [32|64] [value in hex]" % sys.argv[0])
@@ -15,8 +16,18 @@ try:
     val = int(sys.argv[2], base=16)
 except ValueError:
     print_usage()
+    quit()
 
-def do_op(exponent_bits, mantissa_bits):
+def bitcast_to_float(bits, val):
+    if bits == 32:
+        return struct.unpack('!f', struct.pack('!I', val))[0]
+    elif bits == 64:
+        return struct.unpack('!d', struct.pack('!Q', val))[0]
+    else:
+        print_usage()
+        quit()
+
+def do_op(bits, exponent_bits, mantissa_bits):
     sign = (val >> (exponent_bits + mantissa_bits)) & 1
     sign_s = format(sign, "#d")
 
@@ -28,7 +39,7 @@ def do_op(exponent_bits, mantissa_bits):
     mantissa_s_hex = format(mantissa, "#0" + str(int(ceil(mantissa_bits / 4)) + 2) + "x")
     mantissa_s_bin = format(mantissa, "#0" + str(mantissa_bits + 2) + "b")
 
-    print("value:    ", float(val))
+    print("value:    ", bitcast_to_float(bits, val))
     print("sign:     ", sign_s)
     print("exponent: ", exponent_s_hex, " " * (len(mantissa_s_hex) - len(exponent_s_hex) - 1), exponent_s_bin)
     print("mantissa: ", mantissa_s_hex, mantissa_s_bin)
@@ -40,8 +51,8 @@ def do_op(exponent_bits, mantissa_bits):
     )
 
 if sys.argv[1] == "32":
-    do_op(8, 23)
+    do_op(32, 8, 23)
 elif sys.argv[1] == "64":
-    do_op(11, 52)
+    do_op(64, 11, 52)
 else:
     print_usage()
