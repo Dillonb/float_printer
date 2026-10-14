@@ -16,8 +16,8 @@
           dontUnpack = true;
           buildInputs = with pkgs.${system}; [
             (python312.withPackages (pythonPackages: with pythonPackages; [
-              bleak
               requests
+              termcolor
             ]))
           ];
           installPhase = "install -Dm755 ${./float_printer.py} $out/bin/float-printer";
@@ -34,8 +34,10 @@
       devShells = forAllSystems (system: {
         default = pkgs.${system}.mkShell {
           buildInputs = with pkgs.${system}; [
-            python312Full
-            python312Packages.termcolor
+            (python312.withPackages (pythonPackages: with pythonPackages; [
+              requests
+              termcolor
+            ]))
           ];
         };
       });
